@@ -7,8 +7,8 @@
   <a href="https://mongoosejs.com/" target="blank"><img src="https://cms-assets.tutsplus.com/uploads/users/34/posts/29527/preview_image/mongoose.jpg" hieght="20%" width="20%"  alt="Mongooose Logo" /></a>
 
 </div>
-# I follow the file structure only for the assignment purpose not for modular as per the organisation.
-# Node-RabbitMQ-Mongo
+ I follow the file structure only for the assignment purpose not for modular as per the organisation.
+ ## Node-RabbitMQ-Mongo
 
 Its a Simple E-commerce based backend Applicatoion with RabbitMQ Integration
 
