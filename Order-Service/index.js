@@ -43,7 +43,7 @@ async function connectRabbitMQ() {
     // Note:- Need to connect rabbitMQ Server, to access the Channel 
     try {
         const amqpServer = "amqp://localhost:5672";
-        connection = await amqp.connect(amqpServer);
+        connection =  amqp.connect(amqpServer);
         channel = await connection.createChannel();
         await channel.assertQueue("ORDER");
     } catch (err) {

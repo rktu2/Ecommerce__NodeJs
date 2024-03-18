@@ -38,14 +38,31 @@ mongoose.connect("mongodb://localhost:27017/productservice", {
 /**
  * Connects to the rabbitMQ Server and Creates a Queue for PRODUCT 
  */
+
+
 async function connectRabbitMQ() {
-// Note:- Need to connect rabbitMQ Server, to access the Channel 
-const amqpServer = "amqp://localhost:5672";
-    connection = await amqp.connect(amqpServer);
-    channel = await connection.createChannel();
-    await channel.assertQueue("PRODUCT")
+    const amqpServer = "amqp://localhost:5672";
+    let connection, channel;
+
+    try {
+        connection = await amqp.connect(amqpServer);
+        channel = await connection.createChannel();
+        await channel.assertQueue("PRODUCT");
+        console.log("RabbitMQ connection established successfully.");
+    } catch (error) {
+        console.error("Error connecting to RabbitMQ:", error);
+    } finally {
+        if (channel) {
+            await channel.close();
+        }
+        if (connection) {
+            await connection.close();
+        }
+    }
 }
-connectRabbitMQ()
+
+connectRabbitMQ();
+
 
 
 
@@ -104,6 +121,29 @@ app.delete('delete/product/:id', isAuthenticated, async(req, res) =>{
     }
 })
 
+
+app.put('update/product/:id', isAuthenticated , async(req, res) =>{
+    try{
+        const product = await Product.findByIdAndUpdate(req.params.id ,{
+            name:req.body.name,
+            description:req.body.description,
+            price: req.body.price,
+            stock: req.body.stock
+
+        },
+        {new:true}
+        );
+        if(!product){
+            return res.status(401).json({success:false , message:"product not found"})
+        }
+        return res.status(200).json({success:false , message:"product update sucessfully"})
+
+
+    }catch(err){
+        return res.status(500).json({success:false , message:err.message});
+
+    }
+})
 
 
 
