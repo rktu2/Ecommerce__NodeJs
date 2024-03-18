@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const amqp = require('amqplib')
 const Product = require('./product.model');
-const isAuthenticated = require('../Auth-Service/authenticated');
+const isAuthenticated = require('../Customer-Service/authenticated');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const xss = require('xss-clean');
@@ -68,6 +68,41 @@ app.post("/product/create", isAuthenticated, async (req, res) => {
     console.log(err);
    }
 });
+app.get("get/product", isAuthenticated , async(req, res) =>{
+    try{
+        const product = await Product.find();
+        if(!product){
+            return res.status(401).json({success:false , message:'product not found'})
+        }
+        return res.status(200).json({success:true , data:product , message:"list of product"});
+    }catch(e){
+        return res.status(500).json({success:false , message:e.message});
+    }
+})
+app.get('get/ProductById/:id',isAuthenticated, async(req, res)=>{
+    try{
+        const product = await Product.findById(req.params.id);
+        if(!product){
+            return res.status(401).json({success:false , message:"product not found"});
+        }
+        return res.status(200).json({success:true , data:product , message:"Product Found"});
+    }catch(e){
+        return res.status(500).json({success:false , message:e.message});
+
+
+    }
+})
+app.delete('delete/product/:id', isAuthenticated, async(req, res) =>{
+    try{
+        const product = await Product.findByIdAndRemove(req.params.id);
+        if(!product){
+            return res.status(401).json({success:false , message:"product not found"})
+        }
+        return res.status(200).json({success:true , message:"product deleted"})
+    }catch(e){
+        return res.status(500).json({success:false , message:e.message});
+    }
+})
 
 
 
